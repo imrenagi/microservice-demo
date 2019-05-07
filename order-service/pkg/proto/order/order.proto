@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package order;
+
+message OrderCreated {
+    string ID = 1;
+    string customerID = 2;
+    repeated string lineItems = 3;
+    float price = 4;
+    string paymentStatus = 5;
+}

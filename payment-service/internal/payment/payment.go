@@ -2,8 +2,12 @@ package payment
 
 import (
 	"fmt"
+	"log"
 
+	"github.com/gogo/protobuf/proto"
 	"github.com/google/uuid"
+	"github.com/imrenagi/microservice-demo/payment-service/pkg/proto/payment"
+	nats "github.com/nats-io/go-nats"
 )
 
 type NewPaymentCommand struct {
@@ -32,16 +36,18 @@ type Order struct {
 	Price   float64
 }
 
-func NewPaymentService() *PaymentService {
+func NewPaymentService(natsConn *nats.Conn) *PaymentService {
 	return &PaymentService{
-		orders: make(map[string]Order, 0),
-		data:   make(map[string]Payment, 0),
+		orders:   make(map[string]Order, 0),
+		data:     make(map[string]Payment, 0),
+		natsConn: natsConn,
 	}
 }
 
 type PaymentService struct {
-	orders map[string]Order
-	data   map[string]Payment
+	orders   map[string]Order
+	data     map[string]Payment
+	natsConn *nats.Conn
 }
 
 func (p *PaymentService) MakePayment(command NewPaymentCommand) (string, error) {
@@ -51,11 +57,38 @@ func (p *PaymentService) MakePayment(command NewPaymentCommand) (string, error) 
 		}
 		payment := NewPayment(order.OrderID, command.Value)
 		p.data[payment.ID] = payment
-		//TODO publish payment created
+
+		err := p.publishPaymentCreated(payment)
+		if err != nil {
+			return "", err
+		}
 
 		return payment.ID, nil
 	}
 	return "", fmt.Errorf("order not found. Payment is not created")
+}
+
+func (p *PaymentService) publishPaymentCreated(newPayment Payment) error {
+
+	event := payment.PaymentCreated{
+		ID:      newPayment.ID,
+		OrderID: newPayment.OrderID,
+		Value:   float32(newPayment.Value),
+	}
+
+	bytes, err := proto.Marshal(&event)
+	if err != nil {
+		return err
+	}
+
+	if err := p.natsConn.Publish("paymentCreated", bytes); err != nil {
+		return err
+	}
+	p.natsConn.Flush()
+
+	log.Printf("PaymentCreated. Published: %v", newPayment)
+
+	return nil
 }
 
 func (p *PaymentService) AddOrder(order Order) error {

@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+package payment;
+
+message PaymentCreated {
+    string ID = 1;
+    string orderID = 2;    
+    float value = 3;    
+}

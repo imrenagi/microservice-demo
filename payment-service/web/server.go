@@ -2,6 +2,7 @@ package web
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -9,10 +10,10 @@ import (
 )
 
 //NewServer returns new http server
-func NewServer() *Server {
+func NewServer(paymentService *payment.PaymentService) *Server {
 	s := &Server{
 		Router:         mux.NewRouter(),
-		PaymentService: payment.NewPaymentService(),
+		PaymentService: paymentService,
 	}
 	s.routes()
 
@@ -43,6 +44,7 @@ func (s Server) MakePayment() http.HandlerFunc {
 
 		paymentID, err := s.PaymentService.MakePayment(command)
 		if err != nil {
+			log.Println(err)
 			WriteFailResponse(w, http.StatusInternalServerError, err)
 			return
 		}

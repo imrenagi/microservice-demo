@@ -9,10 +9,10 @@ import (
 )
 
 //NewServer returns new http server
-func NewServer() *Server {
+func NewServer(orderService *order.OrderService) *Server {
 	s := &Server{
 		Router:       mux.NewRouter(),
-		OrderService: order.NewOrderService(),
+		OrderService: orderService,
 	}
 	s.routes()
 
