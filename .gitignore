@@ -1,2 +1,3 @@
-/order-service/order-service
-/payment-service/payment-service
+order
+payment
+vendor/

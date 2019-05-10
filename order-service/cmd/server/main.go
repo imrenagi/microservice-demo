@@ -4,7 +4,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/gogo/protobuf/proto"
+	"github.com/golang/protobuf/proto"
 	"github.com/imrenagi/microservice-demo/order-service/internal/order"
 	paymentProto "github.com/imrenagi/microservice-demo/order-service/pkg/proto/payment"
 	"github.com/imrenagi/microservice-demo/order-service/web"

@@ -4,9 +4,9 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/gogo/protobuf/proto"
-	orderProto "github.com/imrenagi/microservice-demo/payment-service/pkg/proto/order"
+	"github.com/golang/protobuf/proto"
 	"github.com/imrenagi/microservice-demo/payment-service/internal/payment"
+	orderProto "github.com/imrenagi/microservice-demo/payment-service/pkg/proto/order"
 	"github.com/imrenagi/microservice-demo/payment-service/web"
 	nats "github.com/nats-io/go-nats"
 )
