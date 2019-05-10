@@ -22,7 +22,8 @@ func main() {
 
 	paymentService := payment.NewPaymentService(natsConn)
 
-	if _, err := natsConn.QueueSubscribe("orderCreated", "worker", func(m *nats.Msg) {
+	if _, err := natsConn.Subscribe("orderCreated", func(m *nats.Msg) {
+		// if _, err := natsConn.QueueSubscribe("orderCreated", "worker", func(m *nats.Msg) {
 		var order orderProto.OrderCreated
 		err := proto.Unmarshal(m.Data, &order)
 		if err != nil {

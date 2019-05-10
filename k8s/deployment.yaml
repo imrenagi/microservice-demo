@@ -73,7 +73,7 @@ spec:
     spec:
       containers:
       - name: payment-service
-        image: gcr.io/imre-experiment/payment-service:v1.0.3
+        image: gcr.io/imre-experiment/payment-service:v1.0.4
         env:        
         - name: NATS_HOST
           valueFrom:
