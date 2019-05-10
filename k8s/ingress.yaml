@@ -1,0 +1,17 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: microservice-demo
+  namespace: dev
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /orders/*
+        backend:
+          serviceName: order-service
+          servicePort: 80
+      - path: /payments/*
+        backend:
+          serviceName: payment-service
+          servicePort: 80

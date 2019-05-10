@@ -1,8 +1,10 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/golang/protobuf/proto"
 	"github.com/imrenagi/microservice-demo/order-service/internal/order"
@@ -13,7 +15,8 @@ import (
 
 func main() {
 
-	natsConn, err := nats.Connect(nats.DefaultURL)
+	fmt.Println(fmt.Sprintf("%s - %s - %s", os.Getenv("NATS_HOST"), os.Getenv("NATS_USERNAME"), os.Getenv("NATS_PASSWORD")))
+	natsConn, err := nats.Connect(os.Getenv("NATS_HOST"), nats.UserInfo(os.Getenv("NATS_USERNAME"), os.Getenv("NATS_PASSWORD")))
 	if err != nil {
 		log.Fatalf(err.Error())
 	}

@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/golang/protobuf/proto"
 	"github.com/imrenagi/microservice-demo/payment-service/internal/payment"
@@ -13,7 +14,7 @@ import (
 
 func main() {
 
-	natsConn, err := nats.Connect(nats.DefaultURL)
+	natsConn, err := nats.Connect(os.Getenv("NATS_HOST"), nats.UserInfo(os.Getenv("NATS_USERNAME"), os.Getenv("NATS_PASSWORD")))
 	if err != nil {
 		log.Fatalf(err.Error())
 	}
@@ -40,7 +41,7 @@ func main() {
 	}
 
 	s := web.NewServer(paymentService)
-	if err := http.ListenAndServe(":8081", s.Router); err != nil {
+	if err := http.ListenAndServe(":8080", s.Router); err != nil {
 		log.Fatalf("Server can't run. Got: `%v`", err)
 	}
 }

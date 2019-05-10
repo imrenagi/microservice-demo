@@ -4,4 +4,4 @@ metadata:
   name: app-config
   namespace: dev
 data:
-  nats.host:  nats-demo-release-nats-client.default.svc.cluster.local
+  nats.host:  nats://nats-demo-release-nats-client.default.svc.cluster.local:4222

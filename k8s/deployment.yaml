@@ -17,19 +17,7 @@ spec:
     spec:
       containers:
       - name: order-service
-        image: gcr.io/imre-experiment/order-service:v1.0.0
-        livenessProbe:
-          httpGet:
-            path: /
-            port: 8080            
-          initialDelaySeconds: 3
-          periodSeconds: 3
-        readynessProbe:
-          httpGet:
-            path: /
-            port: 8080            
-          initialDelaySeconds: 3
-          periodSeconds: 3          
+        image: gcr.io/imre-experiment/order-service:v1.0.3
         env:        
         - name: NATS_HOST
           valueFrom:
@@ -48,6 +36,23 @@ spec:
               key: nats.password              
         ports:
         - containerPort: 8080
+        livenessProbe:
+          httpGet:
+            path: /
+            # this port for liveness/readiness probe is different than the `containerPort` defined above,
+            # so the kubelet can perform health check without being intercepted by istio-proxy
+            port: 8080
+          initialDelaySeconds: 10
+          periodSeconds: 60
+        readinessProbe:
+          httpGet:
+            path: /
+            # this port for liveness/readiness probe is different than the `containerPort` defined above,
+            # so the kubelet can perform health check without being intercepted by istio-proxy
+            port: 8080
+          # set readiness delay > liveness delay, because readiness can be longer due to application's initialization phase (e.g: cache building, etc)
+          initialDelaySeconds: 5
+          periodSeconds: 60          
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -57,7 +62,7 @@ metadata:
   labels:
     app: payment-service    
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: payment-service
@@ -68,19 +73,7 @@ spec:
     spec:
       containers:
       - name: payment-service
-        image: gcr.io/imre-experiment/payment-service:v1.0.0
-        livenessProbe:
-          httpGet:
-            path: /
-            port: 8081            
-          initialDelaySeconds: 3
-          periodSeconds: 3
-        readynessProbe:
-          httpGet:
-            path: /
-            port: 8081            
-          initialDelaySeconds: 3
-          periodSeconds: 3          
+        image: gcr.io/imre-experiment/payment-service:v1.0.3
         env:        
         - name: NATS_HOST
           valueFrom:
@@ -98,7 +91,24 @@ spec:
               name: app-secret
               key: nats.password              
         ports:
-        - containerPort: 8081
+        - containerPort: 8080
+        livenessProbe:
+          httpGet:
+            path: /
+            # this port for liveness/readiness probe is different than the `containerPort` defined above,
+            # so the kubelet can perform health check without being intercepted by istio-proxy
+            port: 8080
+          initialDelaySeconds: 10
+          periodSeconds: 60
+        readinessProbe:
+          httpGet:
+            path: /
+            # this port for liveness/readiness probe is different than the `containerPort` defined above,
+            # so the kubelet can perform health check without being intercepted by istio-proxy
+            port: 8080
+          # set readiness delay > liveness delay, because readiness can be longer due to application's initialization phase (e.g: cache building, etc)
+          initialDelaySeconds: 5
+          periodSeconds: 60                  
 
 # Baca config
 

@@ -18,5 +18,9 @@ test:
 	go test -v ./... -cover -vet -all
 
 docker: 
-	docker build -t $(IMAGE_REGISTRY)/order-service:v1.0.0 -f Dockerfile-Order .
-	docker build -t $(IMAGE_REGISTRY)/payment-service:v1.0.0 -f Dockerfile-Payment .
+	docker build -t $(IMAGE_REGISTRY)/order-service:v1.0.3 -f Dockerfile-Order .
+	docker build -t $(IMAGE_REGISTRY)/payment-service:v1.0.3 -f Dockerfile-Payment .
+
+docker-push:
+	docker push $(IMAGE_REGISTRY)/order-service:v1.0.3
+	docker push $(IMAGE_REGISTRY)/payment-service:v1.0.3

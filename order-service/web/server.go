@@ -76,3 +76,9 @@ func (s Server) GetOrders() http.HandlerFunc {
 		return
 	}
 }
+
+func (s Server) HC() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		WriteSuccessResponse(w, http.StatusOK, "Ok", nil)
+	}
+}

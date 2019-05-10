@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: order-service
+  namespace: dev
+spec:
+  selector:
+    app: order-service
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 8080
+  type: NodePort
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: payment-service
+  namespace: dev
+spec:
+  selector:
+    app: payment-service
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 8080
+  type: NodePort

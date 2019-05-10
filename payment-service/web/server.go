@@ -54,6 +54,12 @@ func (s Server) MakePayment() http.HandlerFunc {
 	}
 }
 
+func (s Server) HC() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		WriteSuccessResponse(w, http.StatusOK, "Ok", nil)
+	}
+}
+
 func (s Server) GetPayments() http.HandlerFunc {
 
 	type Payment struct {
