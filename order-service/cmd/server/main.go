@@ -6,8 +6,8 @@ import (
 
 	"github.com/gogo/protobuf/proto"
 	"github.com/imrenagi/microservice-demo/order-service/internal/order"
+	paymentProto "github.com/imrenagi/microservice-demo/order-service/pkg/proto/payment"
 	"github.com/imrenagi/microservice-demo/order-service/web"
-	paymentProto "github.com/imrenagi/microservice-demo/payment-service/pkg/proto/payment"
 	nats "github.com/nats-io/go-nats"
 )
 
@@ -21,7 +21,7 @@ func main() {
 
 	orderService := order.NewOrderService(natsConn)
 
-	if _, err := natsConn.Subscribe("paymentCreated", func(m *nats.Msg) {
+	if _, err := natsConn.QueueSubscribe("paymentCreated", "worker", func(m *nats.Msg) {
 		var payment paymentProto.PaymentCreated
 		err := proto.Unmarshal(m.Data, &payment)
 		if err != nil {

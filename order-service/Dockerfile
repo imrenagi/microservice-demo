@@ -1,0 +1,21 @@
+FROM golang:1.12.4 as golang
+ENV GOPATH /go
+RUN mkdir -p /go/src/github.com/imrenagi/microservice-demo/order-service
+WORKDIR /go/src/github.com/imrenagi/microservice-demo/order-service
+COPY go.mod .
+COPY . .
+RUN make build
+
+FROM alpine:3.6 as alpine
+RUN apk update && apk add --no-cache ca-certificates tzdata && update-ca-certificates
+RUN adduser -D -g '' appuser
+
+FROM alpine:3.6
+ENTRYPOINT []
+WORKDIR /
+COPY --from=alpine /usr/share/zoneinfo /usr/share/zoneinfo
+COPY --from=alpine /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
+COPY --from=alpine /etc/passwd /etc/passwd
+COPY --from=golang /go/src/github.com/imrenagi/microservice-demo/order-service/order-service .
+USER appuser
+CMD ["./order-service"]
