@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:  
+  name: app-config
+  namespace: dev
+data:
+  nats.host:  nats-demo-release-nats-client.default.svc.cluster.local
